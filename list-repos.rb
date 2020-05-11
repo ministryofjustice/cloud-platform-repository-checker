@@ -22,6 +22,13 @@ class RepositoryReport
     @repo_data = repo_data
   end
 
+  # TODO: additional checks
+  #   * has issues enabled
+  #   * deleteBranchOnMerge
+  #   * mergeCommitAllowed (do we want this on or off?)
+  #   * squashMergeAllowed (do we want this on or off?)
+  #   * teams with permissions (might need to use v3 API https://github.community/t5/GitHub-API-Development-and/How-to-get-repo-teams-via-GraphQL/m-p/41399#M3722)
+
   def report
     {
       has_master_branch_protection: has_master_branch_protection?,
@@ -71,8 +78,12 @@ def matching_repo_names(organization, regexp)
     .map { |repo| repo["name"] }
 end
 
-# TODO: figure out a way to only fetch cloud-platform-* repos
-# TODO: de-duplicate the code
+# TODO:
+#   * figure out a way to only fetch cloud-platform-* repos
+#   * de-duplicate the code
+#   * filter out archived repos
+#   * filter out disabled repos
+#
 def list_repos(organization)
   repos = []
   end_cursor = nil
