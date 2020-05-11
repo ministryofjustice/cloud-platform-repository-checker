@@ -15,6 +15,90 @@ PAGE_SIZE = 100
 REGEXP = /^cloud-platform-*/
 MASTER = "master"
 
+class RepositoryReport
+  attr_reader :repo_data
+
+  def initialize(repo_data)
+    @repo_data = repo_data
+  end
+
+  def report
+    {
+      has_master_branch_protection: has_master_branch_protection?,
+      requires_approving_reviews: requires_approving_reviews?,
+      requires_code_owner_reviews: requires_code_owner_reviews?,
+      administrators_require_review: administrators_require_review?,
+      dismisses_stale_reviews: dismisses_stale_reviews?,
+      requires_strict_status_checks: requires_strict_status_checks?,
+    }
+  end
+
+  private
+
+  def branch_protection_rules
+    @rules ||= repo_data.dig("data", "repository", "branchProtectionRules", "edges")
+  end
+
+  def has_master_branch_protection?
+    requiring_branch_protection_rules do |rules|
+
+      rules
+        .filter { |edge| edge.dig("node", "pattern") == MASTER }
+        .any?
+    end
+  end
+
+  def requires_approving_reviews?
+    requiring_branch_protection_rules do |rules|
+
+      rules
+        .map { |edge| edge.dig("node", "requiresApprovingReviews") }
+        .all?
+    end
+  end
+
+  def requires_code_owner_reviews?
+    requiring_branch_protection_rules do |rules|
+
+      rules
+        .map { |edge| edge.dig("node", "requiresCodeOwnerReviews") }
+        .all?
+    end
+  end
+
+  def administrators_require_review?
+    requiring_branch_protection_rules do |rules|
+      rules
+        .map { |edge| edge.dig("node", "isAdminEnforced") }
+        .all?
+    end
+  end
+
+  def dismisses_stale_reviews?
+    requiring_branch_protection_rules do |rules|
+      rules
+        .map { |edge| edge.dig("node", "dismissesStaleReviews") }
+        .all?
+    end
+  end
+
+  def requires_strict_status_checks?
+    requiring_branch_protection_rules do |rules|
+      rules
+        .map { |edge| edge.dig("node", "requiresStrictStatusChecks") }
+        .all?
+    end
+  end
+
+  def requiring_branch_protection_rules
+    rules = branch_protection_rules
+    return false unless rules.any?
+
+    yield rules
+  end
+end
+
+
 def matching_repo_names(organization, regexp)
   list_repos(organization)
     .filter { |repo| repo["name"] =~ regexp }
@@ -118,20 +202,11 @@ def repo_settings_query(params)
             node {
               id
               pattern
-              pushAllowances(first:50) {
-                edges {
-                  node {
-                    id
-                  }
-                }
-              }
-              restrictsPushes
-              restrictsReviewDismissals
               requiresApprovingReviews
               requiresCodeOwnerReviews
-              requiredApprovingReviewCount
               isAdminEnforced
               dismissesStaleReviews
+              requiresStrictStatusChecks
             }
           }
         }
@@ -140,26 +215,15 @@ def repo_settings_query(params)
   ]
 end
 
-def report(repo_data)
-  {
-    has_master_branch_protection: has_master_branch_protection?(repo_data)
-  }
-end
-
-def has_master_branch_protection?(repo_data)
-  branch_protection_rules = repo_data.dig("data", "repository", "branchProtectionRules", "edges")
-  return false unless branch_protection_rules.any?
-
-  branch_protection_rules
-    .filter { |edge| edge.dig("node", "pattern") == MASTER }
-    .any?
-end
 
 # pp matching_repo_names(ORGANIZATION, REGEXP)
 
-repo_data = get_repo_settings(ORGANIZATION, "cloud-platform-helm-charts")
-# pp repo_data
-
+puts "Bad-------------------------------"
 repo_data = get_repo_settings(ORGANIZATION, "testing-repo-settings")
+pp repo_data
+pp RepositoryReport.new(repo_data).report
 
-# pp report(repo_data)
+puts "Good-------------------------------"
+repo_data = get_repo_settings(ORGANIZATION, "cloud-platform-infrastructure")
+pp repo_data
+pp RepositoryReport.new(repo_data).report
