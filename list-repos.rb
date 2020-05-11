@@ -25,11 +25,11 @@ class RepositoryReport
   def report
     {
       has_master_branch_protection: has_master_branch_protection?,
-      requires_approving_reviews: requires_approving_reviews?,
-      requires_code_owner_reviews: requires_code_owner_reviews?,
-      administrators_require_review: administrators_require_review?,
-      dismisses_stale_reviews: dismisses_stale_reviews?,
-      requires_strict_status_checks: requires_strict_status_checks?,
+      requires_approving_reviews: has_branch_protection_property?("requiresApprovingReviews"),
+      requires_code_owner_reviews: has_branch_protection_property?("requiresCodeOwnerReviews"),
+      administrators_require_review: has_branch_protection_property?("isAdminEnforced"),
+      dismisses_stale_reviews: has_branch_protection_property?("dismissesStaleReviews"),
+      requires_strict_status_checks: has_branch_protection_property?("requiresStrictStatusChecks"),
     }
   end
 
@@ -48,44 +48,10 @@ class RepositoryReport
     end
   end
 
-  def requires_approving_reviews?
-    requiring_branch_protection_rules do |rules|
-
-      rules
-        .map { |edge| edge.dig("node", "requiresApprovingReviews") }
-        .all?
-    end
-  end
-
-  def requires_code_owner_reviews?
-    requiring_branch_protection_rules do |rules|
-
-      rules
-        .map { |edge| edge.dig("node", "requiresCodeOwnerReviews") }
-        .all?
-    end
-  end
-
-  def administrators_require_review?
+  def has_branch_protection_property?(property)
     requiring_branch_protection_rules do |rules|
       rules
-        .map { |edge| edge.dig("node", "isAdminEnforced") }
-        .all?
-    end
-  end
-
-  def dismisses_stale_reviews?
-    requiring_branch_protection_rules do |rules|
-      rules
-        .map { |edge| edge.dig("node", "dismissesStaleReviews") }
-        .all?
-    end
-  end
-
-  def requires_strict_status_checks?
-    requiring_branch_protection_rules do |rules|
-      rules
-        .map { |edge| edge.dig("node", "requiresStrictStatusChecks") }
+        .map { |edge| edge.dig("node", property) }
         .all?
     end
   end
