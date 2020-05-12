@@ -19,18 +19,17 @@ require File.join(libdir, "repository_report")
 ############################################################
 
 # TODO: get these from env. vars.
-ORGANIZATION = "ministryofjustice"
-REGEXP = /^cloud-platform-*/
-TEAM = "WebOps"
+params = {
+  organization: "ministryofjustice",
+  regexp: Regexp.new("^cloud-platform-*"),
+  team: "WebOps",
+  github_token: ENV.fetch("GITHUB_TOKEN")
+}
 
-repositories = RepositoryLister.new(organization: ORGANIZATION, regexp: REGEXP)
+repositories = RepositoryLister.new(params)
   .repository_names
   .inject([]) do |arr, repo_name|
-    report = RepositoryReport.new(
-      organization: ORGANIZATION,
-      team: TEAM,
-      repo_name: repo_name
-    ).report
+    report = RepositoryReport.new(params.merge(repo_name: repo_name)).report
     arr << report
 end
 
