@@ -18,11 +18,10 @@ require File.join(libdir, "repository_report")
 
 ############################################################
 
-# TODO: get these from env. vars.
 params = {
-  organization: "ministryofjustice",
-  regexp: Regexp.new("^cloud-platform-*"),
-  team: "WebOps",
+  organization: ENV.fetch("ORGANIZATION"),
+  regexp: Regexp.new(ENV.fetch("REGEXP")),
+  team: ENV.fetch("TEAM"),
   github_token: ENV.fetch("GITHUB_TOKEN")
 }
 
