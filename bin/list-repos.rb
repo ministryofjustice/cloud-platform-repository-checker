@@ -23,7 +23,7 @@ ORGANIZATION = "ministryofjustice"
 REGEXP = /^cloud-platform-*/
 TEAM = "WebOps"
 
-repositories = RepositoryLister.new(ORGANIZATION, REGEXP)
+repositories = RepositoryLister.new(organization: ORGANIZATION, regexp: REGEXP)
   .repository_names
   .inject([]) do |arr, repo_name|
     report = RepositoryReport.new(

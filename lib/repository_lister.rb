@@ -3,9 +3,9 @@ class RepositoryLister < GithubGraphQlClient
 
   PAGE_SIZE = 100
 
-  def initialize(organization, regexp)
-    @organization = organization
-    @regexp = regexp
+  def initialize(params)
+    @organization = params.fetch(:organization)
+    @regexp = params.fetch(:regexp)
   end
 
   # Returns a list of repository names which match `regexp`
