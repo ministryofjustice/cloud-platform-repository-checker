@@ -1,5 +1,11 @@
 class GithubGraphQlClient
+  attr_reader :github_token
+
   GITHUB_GRAPHQL_URL = "https://api.github.com/graphql"
+
+  def initialize(params)
+    @github_token = params.fetch(:github_token)
+  end
 
   private
 

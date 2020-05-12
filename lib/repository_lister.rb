@@ -6,6 +6,7 @@ class RepositoryLister < GithubGraphQlClient
   def initialize(params)
     @organization = params.fetch(:organization)
     @regexp = params.fetch(:regexp)
+    super(params)
   end
 
   # Returns a list of repository names which match `regexp`
@@ -45,7 +46,7 @@ class RepositoryLister < GithubGraphQlClient
   def get_repos(end_cursor = nil)
     json = run_query(
       body: repositories_query(end_cursor),
-      token: ENV.fetch("GITHUB_TOKEN")
+      token: github_token
     )
 
     JSON.parse(json)

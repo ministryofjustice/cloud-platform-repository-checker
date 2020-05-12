@@ -10,6 +10,7 @@ class RepositoryReport < GithubGraphQlClient
     @organization = params.fetch(:organization)
     @repo_name = params.fetch(:repo_name)
     @team = params.fetch(:team)
+    super(params)
   end
 
   # TODO: additional checks
@@ -57,7 +58,7 @@ class RepositoryReport < GithubGraphQlClient
 
     json = run_query(
       body: body,
-      token: ENV.fetch("GITHUB_TOKEN")
+      token: github_token
     )
 
     JSON.parse(json)
@@ -92,7 +93,7 @@ class RepositoryReport < GithubGraphQlClient
   end
 
   def is_team_admin?
-    client = Octokit::Client.new(access_token: ENV.fetch("GITHUB_TOKEN"))
+    client = Octokit::Client.new(access_token: github_token)
 
     client.repo_teams([organization, repo_name].join("/")).filter do |team|
       team[:name] == team && team[:permission] == ADMIN
