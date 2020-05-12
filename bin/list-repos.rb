@@ -13,11 +13,8 @@ require "octokit"
 require "pry-byebug"
 
 ORGANIZATION = "ministryofjustice"
-PAGE_SIZE = 100
 REGEXP = /^cloud-platform-*/
-MASTER = "master"
 TEAM = "WebOps"
-ADMIN = "admin"
 
 class GithubGraphQlClient
   GITHUB_GRAPHQL_URL = "https://api.github.com/graphql"
@@ -40,6 +37,8 @@ end
 
 class RepositoryLister < GithubGraphQlClient
   attr_reader :organization, :regexp
+
+  PAGE_SIZE = 100
 
   def initialize(organization, regexp)
     @organization = organization
@@ -113,6 +112,8 @@ end
 class RepositoryReport < GithubGraphQlClient
   attr_reader :organization, :repo_name
 
+  MASTER = "master"
+  ADMIN = "admin"
   PASS = "PASS"
   FAIL = "FAIL"
 
