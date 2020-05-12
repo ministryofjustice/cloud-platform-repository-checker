@@ -29,15 +29,15 @@ class RepositoryLister < GithubGraphQlClient
     end_cursor = nil
 
     data = get_repos(end_cursor)
-    repos = repos + data.dig("data", "organization", "repositories", "nodes")
-    next_page = data.dig("data", "organization", "repositories", "pageInfo", "hasNextPage")
-    end_cursor = data.dig("data", "organization", "repositories", "pageInfo", "endCursor")
+    repos = repos + data.fetch("nodes")
+    next_page = data.dig("pageInfo", "hasNextPage")
+    end_cursor = data.dig("pageInfo", "endCursor")
 
     while next_page do
       data = get_repos(end_cursor)
-      repos = repos + data.dig("data", "organization", "repositories", "nodes")
-      next_page = data.dig("data", "organization", "repositories", "pageInfo", "hasNextPage")
-      end_cursor = data.dig("data", "organization", "repositories", "pageInfo", "endCursor")
+      repos = repos + data.fetch("nodes")
+      next_page = data.dig("pageInfo", "hasNextPage")
+      end_cursor = data.dig("pageInfo", "endCursor")
     end
 
     repos
@@ -49,7 +49,7 @@ class RepositoryLister < GithubGraphQlClient
       token: github_token
     )
 
-    JSON.parse(json)
+    JSON.parse(json).dig("data", "organization", "repositories")
   end
 
   def repositories_query(end_cursor)
