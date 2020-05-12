@@ -5,15 +5,18 @@
 require "bundler/setup"
 require "json"
 require "net/http"
-require "open3"
 require "uri"
+require "octokit"
 require "pry-byebug"
 
-GITHUB_API_URL = "https://api.github.com/graphql"
+GITHUB_API_URL = "https://api.github.com"
+GITHUB_GRAPHQL_URL = "https://api.github.com/graphql"
 ORGANIZATION = "ministryofjustice"
 PAGE_SIZE = 100
 REGEXP = /^cloud-platform-*/
 MASTER = "master"
+TEAM = "WebOps"
+ADMIN = "admin"
 
 class RepositoryReport
   attr_reader :repo_data
@@ -37,10 +40,27 @@ class RepositoryReport
       administrators_require_review: has_branch_protection_property?("isAdminEnforced"),
       dismisses_stale_reviews: has_branch_protection_property?("dismissesStaleReviews"),
       requires_strict_status_checks: has_branch_protection_property?("requiresStrictStatusChecks"),
+      team_is_admin: is_team_admin?,
     }
   end
 
   private
+
+  def is_team_admin?
+    client = Octokit::Client.new(access_token: ENV.fetch("GITHUB_TOKEN"))
+
+    client.repo_teams([repo_owner, repo_name].join("/")).filter do |team|
+      team[:name] == TEAM && team[:permission] == ADMIN
+    end.any?
+  end
+
+  def repo_name
+    repo_data.dig("data", "repository", "name")
+  end
+
+  def repo_owner
+    repo_data.dig("data", "repository", "owner", "login")
+  end
 
   def branch_protection_rules
     @rules ||= repo_data.dig("data", "repository", "branchProtectionRules", "edges")
@@ -122,7 +142,7 @@ def run_query(params)
   json = {query: body}.to_json
   headers = {"Authorization" => "bearer #{token}"}
 
-  uri = URI.parse(GITHUB_API_URL)
+  uri = URI.parse(GITHUB_GRAPHQL_URL)
   resp = Net::HTTP.post(uri, json, headers)
 
   resp.body
@@ -173,11 +193,13 @@ def repo_settings_query(params)
   %[
     {
       repository(owner: "#{owner}", name: "#{repo_name}") {
-        id
+        name
+        owner {
+          login
+        }
         branchProtectionRules(first: 50) {
           edges {
             node {
-              id
               pattern
               requiresApprovingReviews
               requiresCodeOwnerReviews
@@ -204,3 +226,4 @@ puts "Good-------------------------------"
 repo_data = get_repo_settings(ORGANIZATION, "cloud-platform-infrastructure")
 pp repo_data
 pp RepositoryReport.new(repo_data).report
+
