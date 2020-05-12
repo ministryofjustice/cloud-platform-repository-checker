@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-# Script to list repositories in the ministryofjustice organisation
-# and output a JSON report of how well they do/don't comply with
-# our organisation-wide standards for how github repositories should
-# be configured.
+# Script to list repositories in the ministryofjustice organisation whose names
+# match a regular expression, and output a JSON report of how well they
+# do/don't comply with our team-wide standards for how github repositories
+# should be configured.
 
 require "bundler/setup"
 require "json"
