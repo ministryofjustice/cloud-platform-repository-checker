@@ -18,6 +18,7 @@ require File.join(libdir, "repository_report")
 
 ############################################################
 
+# TODO: get these from env. vars.
 ORGANIZATION = "ministryofjustice"
 REGEXP = /^cloud-platform-*/
 TEAM = "WebOps"
@@ -25,7 +26,12 @@ TEAM = "WebOps"
 repositories = RepositoryLister.new(ORGANIZATION, REGEXP)
   .repository_names
   .inject([]) do |arr, repo_name|
-    arr << RepositoryReport.new(ORGANIZATION, repo_name).report
+    report = RepositoryReport.new(
+      organization: ORGANIZATION,
+      team: TEAM,
+      repo_name: repo_name
+    ).report
+    arr << report
 end
 
 puts({

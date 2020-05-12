@@ -1,14 +1,15 @@
 class RepositoryReport < GithubGraphQlClient
-  attr_reader :organization, :repo_name
+  attr_reader :organization, :repo_name, :team
 
   MASTER = "master"
   ADMIN = "admin"
   PASS = "PASS"
   FAIL = "FAIL"
 
-  def initialize(organization, repo_name)
-    @organization = organization
-    @repo_name = repo_name
+  def initialize(params)
+    @organization = params.fetch(:organization)
+    @repo_name = params.fetch(:repo_name)
+    @team = params.fetch(:team)
   end
 
   # TODO: additional checks
@@ -94,7 +95,7 @@ class RepositoryReport < GithubGraphQlClient
     client = Octokit::Client.new(access_token: ENV.fetch("GITHUB_TOKEN"))
 
     client.repo_teams([organization, repo_name].join("/")).filter do |team|
-      team[:name] == TEAM && team[:permission] == ADMIN
+      team[:name] == team && team[:permission] == ADMIN
     end.any?
   rescue Octokit::NotFound
     # This happens if our token does not have permission to view repo settings
