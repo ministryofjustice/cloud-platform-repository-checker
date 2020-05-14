@@ -1,4 +1,4 @@
-IMAGE := ministryofjustice/cloud-platform-repository-checker:1.0
+IMAGE := ministryofjustice/cloud-platform-repository-checker:1.1
 
 .built-image: Dockerfile makefile Gemfile Gemfile.lock bin/*.rb lib/*.rb
 	docker build -t $(IMAGE) .
