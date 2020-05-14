@@ -48,3 +48,5 @@ build-iPhoneSimulator/
 .built-image
 pkg
 rdoc
+Rakefile
+cloud-platform-repository-checker.gemspec
