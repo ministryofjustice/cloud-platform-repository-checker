@@ -20,6 +20,7 @@ spec = Gem::Specification.new do |s|
   s.author            = "David Salgado"
   s.email             = "platforms@digital.justice.gov.uk"
   s.homepage          = "https://github.com/ministryofjustice/cloud-platform"
+  s.license           = "MIT"
 
   s.has_rdoc          = true
   s.extra_rdoc_files  = %w(README.md)
