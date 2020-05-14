@@ -40,7 +40,7 @@ class RepositoryLister < GithubGraphQlClient
       end_cursor = data.dig("pageInfo", "endCursor")
     end
 
-    repos
+    repos.reject { |r| r.dig("isArchived") || r.dig("isDisabled") }
   end
 
   def get_repos(end_cursor = nil)
@@ -52,6 +52,11 @@ class RepositoryLister < GithubGraphQlClient
     JSON.parse(json).dig("data", "organization", "repositories")
   end
 
+  # TODO: it should be possible to exclude disabled/archived repos in this
+  # query, but I don't know how to do that yet, so I'm just fetching everything
+  # and throwing away the disabled/archived repos later. We should also be able
+  # to only fetch repos whose names match the pattern we're interested in, at
+  # this stage.
   def repositories_query(end_cursor)
     after = end_cursor.nil? ? "" : %[, after: "#{end_cursor}"]
     %[
@@ -61,6 +66,9 @@ class RepositoryLister < GithubGraphQlClient
           nodes {
             id
             name
+            isLocked
+            isArchived
+            isDisabled
           }
           pageInfo {
             hasNextPage
