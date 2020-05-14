@@ -23,6 +23,7 @@ class RepositoryReport < GithubGraphQlClient
     {
       organization: organization,
       name: repo_name,
+      url: repo_url,
       status: status,
       report: all_checks_result
     }
@@ -32,6 +33,10 @@ class RepositoryReport < GithubGraphQlClient
 
   def repo_data
     @repo_data ||= fetch_repo_data
+  end
+
+  def repo_url
+    @url ||= repo_data.dig("data", "repository", "url")
   end
 
   def status
@@ -72,6 +77,7 @@ class RepositoryReport < GithubGraphQlClient
       {
         repository(owner: "#{owner}", name: "#{repo_name}") {
           name
+          url
           owner {
             login
           }
