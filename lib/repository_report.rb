@@ -101,7 +101,7 @@ class RepositoryReport < GithubGraphQlClient
   def is_team_admin?
     client = Octokit::Client.new(access_token: github_token)
 
-    client.repo_teams([organization, repo_name].join("/")).filter do |team|
+    client.repo_teams([organization, repo_name].join("/")).select do |team|
       team[:name] == team && team[:permission] == ADMIN
     end.any?
   rescue Octokit::NotFound
@@ -117,7 +117,7 @@ class RepositoryReport < GithubGraphQlClient
     requiring_branch_protection_rules do |rules|
 
       rules
-        .filter { |edge| edge.dig("node", "pattern") == MASTER }
+        .select { |edge| edge.dig("node", "pattern") == MASTER }
         .any?
     end
   end

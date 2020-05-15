@@ -1,16 +1,13 @@
-IMAGE := ministryofjustice/cloud-platform-repository-checker:1.1
+VERSION := 1.0.4
 
-.built-image: Dockerfile makefile Gemfile Gemfile.lock bin/*.rb lib/*.rb
-	docker build -t $(IMAGE) .
-	docker push $(IMAGE)
-	touch .built-image
+cloud-platform-repository-checker.gemspec: Rakefile.template bin/* lib/*
+	(export VERSION=$(VERSION); cat Rakefile.template | envsubst > Rakefile)
+	rake package
 
-build: .built-image
+publish: cloud-platform-repository-checker.gemspec
+	gem push pkg/cloud-platform-repository-checker-$(VERSION).gem
 
-run: .built-image
-	docker run --rm \
-		-e GITHUB_TOKEN=$${GITHUB_TOKEN} \
-		-e ORGANIZATION=$${ORGANIZATION} \
-		-e TEAM=$${TEAM} \
-		-e REGEXP=$${REGEXP} \
-		$(IMAGE)
+clean:
+	rm -rf pkg cloud-platform-repository-checker.gemspec Rakefile
+
+.PHONY: publish clean
