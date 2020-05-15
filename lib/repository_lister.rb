@@ -12,7 +12,7 @@ class RepositoryLister < GithubGraphQlClient
   # Returns a list of repository names which match `regexp`
   def repository_names
     list_repos
-      .filter { |repo| repo["name"] =~ regexp }
+      .select { |repo| repo["name"] =~ regexp }
       .map { |repo| repo["name"] }
   end
 
