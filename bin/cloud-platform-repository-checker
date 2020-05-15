@@ -5,16 +5,14 @@
 # do/don't comply with our team-wide standards for how github repositories
 # should be configured.
 
-require "bundler/setup"
 require "json"
 require "net/http"
 require "uri"
 require "octokit"
 
-libdir = File.join(".", File.dirname(__FILE__), "..", "lib")
-require File.join(libdir, "github_graph_ql_client")
-require File.join(libdir, "repository_lister")
-require File.join(libdir, "repository_report")
+require_relative "../lib/github_graph_ql_client"
+require_relative "../lib/repository_lister"
+require_relative "../lib/repository_report"
 
 ############################################################
 
