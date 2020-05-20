@@ -8,4 +8,5 @@ gem "octokit"
 
 group :development do
   gem "pry-byebug"
+  gem "rspec"
 end

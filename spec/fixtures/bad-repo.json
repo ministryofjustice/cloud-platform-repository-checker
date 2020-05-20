@@ -1,0 +1,14 @@
+{
+  "data": {
+    "repository": {
+      "name": "cloud-platform-repository-checker",
+      "url": "https://github.com/ministryofjustice/cloud-platform-repository-checker",
+      "owner": {
+        "login": "ministryofjustice"
+      },
+      "branchProtectionRules": {
+        "edges": []
+      }
+    }
+  }
+}

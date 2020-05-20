@@ -1,0 +1,25 @@
+{
+  "data": {
+    "repository": {
+      "name": "cloud-platform-infrastructure",
+      "url": "https://github.com/ministryofjustice/cloud-platform-infrastructure",
+      "owner": {
+        "login": "ministryofjustice"
+      },
+      "branchProtectionRules": {
+        "edges": [
+          {
+            "node": {
+              "pattern": "master",
+              "requiresApprovingReviews": true,
+              "requiresCodeOwnerReviews": true,
+              "isAdminEnforced": true,
+              "dismissesStaleReviews": true,
+              "requiresStrictStatusChecks": true
+            }
+          }
+        ]
+      }
+    }
+  }
+}
