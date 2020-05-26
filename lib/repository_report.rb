@@ -101,8 +101,8 @@ class RepositoryReport < GithubGraphQlClient
   def is_team_admin?
     client = Octokit::Client.new(access_token: github_token)
 
-    client.repo_teams([organization, repo_name].join("/")).select do |team|
-      team[:name] == team && team[:permission] == ADMIN
+    client.repo_teams([organization, repo_name].join("/")).select do |t|
+      t[:name] == team && t[:permission] == ADMIN
     end.any?
   rescue Octokit::NotFound
     # This happens if our token does not have permission to view repo settings
