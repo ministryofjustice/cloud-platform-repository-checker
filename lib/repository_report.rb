@@ -45,7 +45,7 @@ class RepositoryReport < GithubGraphQlClient
 
   def all_checks_result
     @all_checks_result ||= {
-      has_master_branch_protection: has_master_branch_protection?,
+      has_main_branch_protection: has_main_branch_protection?,
       requires_approving_reviews: has_branch_protection_property?("requiresApprovingReviews"),
       requires_code_owner_reviews: has_branch_protection_property?("requiresCodeOwnerReviews"),
       administrators_require_review: has_branch_protection_property?("isAdminEnforced"),
@@ -113,7 +113,7 @@ class RepositoryReport < GithubGraphQlClient
     @rules ||= repo_data.dig("data", "repository", "branchProtectionRules", "edges")
   end
 
-  def has_master_branch_protection?
+  def has_main_branch_protection?
     requiring_branch_protection_rules do |rules|
 
       rules

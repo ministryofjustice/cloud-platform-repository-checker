@@ -8,7 +8,7 @@ describe RepositoryReport do
 
   let(:checks) {
     [
-      :has_master_branch_protection,
+      :has_main_branch_protection,
       :requires_approving_reviews,
       :requires_code_owner_reviews,
       :administrators_require_review,
