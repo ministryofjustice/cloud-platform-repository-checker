@@ -8,7 +8,7 @@ describe RepositoryReport do
 
   let(:checks) {
     [
-      :has_master_branch_protection,
+      :has_main_branch_protection,
       :requires_approving_reviews,
       :requires_code_owner_reviews,
       :administrators_require_review,
@@ -26,17 +26,19 @@ describe RepositoryReport do
   end
 
   context "when repository is correctly configured" do
-    let(:repo_data) { JSON.parse(File.read("spec/fixtures/good-repo.json")) }
+    ["spec/fixtures/good-repo.json", "spec/fixtures/good-repo-main.json"].each do |fixture|
+      let(:repo_data) { JSON.parse(File.read(fixture)) }
 
-    it "passes" do
-      result = report.report
-      expect(result[:status]).to eq("PASS")
-    end
+      it "passes" do
+        result = report.report
+        expect(result[:status]).to eq("PASS")
+      end
 
-    it "passes checks" do
-      checks.each do |check|
-        result = report.report[:report]
-        expect(result[check]).to be(true)
+      it "passes checks" do
+        checks.each do |check|
+          result = report.report[:report]
+          expect(result[check]).to be(true)
+        end
       end
     end
   end
