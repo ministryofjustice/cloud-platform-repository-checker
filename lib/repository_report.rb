@@ -23,6 +23,7 @@ class RepositoryReport < GithubGraphQlClient
     {
       organization: organization,
       name: repo_name,
+      default_branch: default_branch,
       url: repo_url,
       status: status,
       report: all_checks_result
@@ -81,6 +82,9 @@ class RepositoryReport < GithubGraphQlClient
           owner {
             login
           }
+          defaultBranchRef {
+            name
+          }
           branchProtectionRules(first: 50) {
             edges {
               node {
@@ -96,6 +100,10 @@ class RepositoryReport < GithubGraphQlClient
         }
       }
     ]
+  end
+
+  def default_branch
+    repo_data.dig("data", "repository", "defaultBranchRef", "name")
   end
 
   def is_team_admin?
