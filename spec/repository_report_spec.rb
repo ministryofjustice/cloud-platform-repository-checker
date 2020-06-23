@@ -8,6 +8,7 @@ describe RepositoryReport do
 
   let(:checks) {
     [
+      :default_branch_main,
       :has_main_branch_protection,
       :requires_approving_reviews,
       :requires_code_owner_reviews,
@@ -67,6 +68,11 @@ describe RepositoryReport do
     it "fails" do
       result = report.report
       expect(result[:status]).to eq("FAIL")
+    end
+
+    it "reports bad default branch" do
+      result = report.report[:report]
+      expect(result[:default_branch_main]).to be(false)
     end
   end
 end
