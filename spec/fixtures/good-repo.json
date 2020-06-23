@@ -7,13 +7,13 @@
         "login": "ministryofjustice"
       },
       "defaultBranchRef": {
-        "name": "master"
+        "name": "main"
       },
       "branchProtectionRules": {
         "edges": [
           {
             "node": {
-              "pattern": "master",
+              "pattern": "main",
               "requiresApprovingReviews": true,
               "requiresCodeOwnerReviews": true,
               "isAdminEnforced": true,

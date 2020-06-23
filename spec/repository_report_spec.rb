@@ -26,19 +26,17 @@ describe RepositoryReport do
   end
 
   context "when repository is correctly configured" do
-    ["spec/fixtures/good-repo.json", "spec/fixtures/good-repo-main.json"].each do |fixture|
-      let(:repo_data) { JSON.parse(File.read(fixture)) }
+    let(:repo_data) { JSON.parse(File.read("spec/fixtures/good-repo.json")) }
 
-      it "passes" do
-        result = report.report
-        expect(result[:status]).to eq("PASS")
-      end
+    it "passes" do
+      result = report.report
+      expect(result[:status]).to eq("PASS")
+    end
 
-      it "passes checks" do
-        checks.each do |check|
-          result = report.report[:report]
-          expect(result[check]).to be(true)
-        end
+    it "passes checks" do
+      checks.each do |check|
+        result = report.report[:report]
+        expect(result[check]).to be(true)
       end
     end
   end
