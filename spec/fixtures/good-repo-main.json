@@ -6,6 +6,9 @@
       "owner": {
         "login": "ministryofjustice"
       },
+      "defaultBranchRef": {
+        "name": "main"
+      },
       "branchProtectionRules": {
         "edges": [
           {
