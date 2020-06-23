@@ -41,8 +41,8 @@ describe RepositoryReport do
     end
   end
 
-  context "when repository is incorrectly configured" do
-    let(:repo_data) { JSON.parse(File.read("spec/fixtures/bad-repo.json")) }
+  context "when repository has no branch protection" do
+    let(:repo_data) { JSON.parse(File.read("spec/fixtures/bad-repo-no-branch-protection.json")) }
 
     before do
       allow(report).to receive(:is_team_admin?).and_return(false)
