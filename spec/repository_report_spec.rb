@@ -60,4 +60,13 @@ describe RepositoryReport do
       end
     end
   end
+
+  context "when default branch is master" do
+    let(:repo_data) { JSON.parse(File.read("spec/fixtures/bad-repo-master.json")) }
+
+    it "fails" do
+      result = report.report
+      expect(result[:status]).to eq("FAIL")
+    end
+  end
 end

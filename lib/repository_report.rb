@@ -1,7 +1,7 @@
 class RepositoryReport < GithubGraphQlClient
   attr_reader :organization, :repo_name, :team
 
-  MAIN_BRANCHES = ["main", "master"] # We are changing to use "main" but many repos still use "master" as default branch
+  MAIN_BRANCH = "main"
   ADMIN = "admin"
   PASS = "PASS"
   FAIL = "FAIL"
@@ -125,7 +125,7 @@ class RepositoryReport < GithubGraphQlClient
     requiring_branch_protection_rules do |rules|
 
       rules
-        .select { |edge| MAIN_BRANCHES.include?(edge.dig("node", "pattern")) }
+        .select { |edge| edge.dig("node", "pattern") == MAIN_BRANCH }
         .any?
     end
   end
