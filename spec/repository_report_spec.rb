@@ -8,6 +8,7 @@ describe RepositoryReport do
 
   let(:checks) {
     [
+      :default_branch_main,
       :has_main_branch_protection,
       :requires_approving_reviews,
       :requires_code_owner_reviews,
@@ -26,25 +27,23 @@ describe RepositoryReport do
   end
 
   context "when repository is correctly configured" do
-    ["spec/fixtures/good-repo.json", "spec/fixtures/good-repo-main.json"].each do |fixture|
-      let(:repo_data) { JSON.parse(File.read(fixture)) }
+    let(:repo_data) { JSON.parse(File.read("spec/fixtures/good-repo.json")) }
 
-      it "passes" do
-        result = report.report
-        expect(result[:status]).to eq("PASS")
-      end
+    it "passes" do
+      result = report.report
+      expect(result[:status]).to eq("PASS")
+    end
 
-      it "passes checks" do
-        checks.each do |check|
-          result = report.report[:report]
-          expect(result[check]).to be(true)
-        end
+    it "passes checks" do
+      checks.each do |check|
+        result = report.report[:report]
+        expect(result[check]).to be(true)
       end
     end
   end
 
-  context "when repository is incorrectly configured" do
-    let(:repo_data) { JSON.parse(File.read("spec/fixtures/bad-repo.json")) }
+  context "when repository has no branch protection" do
+    let(:repo_data) { JSON.parse(File.read("spec/fixtures/bad-repo-no-branch-protection.json")) }
 
     before do
       allow(report).to receive(:is_team_admin?).and_return(false)
@@ -60,6 +59,20 @@ describe RepositoryReport do
         result = report.report[:report]
         expect(result[check]).to be(false)
       end
+    end
+  end
+
+  context "when default branch is master" do
+    let(:repo_data) { JSON.parse(File.read("spec/fixtures/bad-repo-master.json")) }
+
+    it "fails" do
+      result = report.report
+      expect(result[:status]).to eq("FAIL")
+    end
+
+    it "reports bad default branch" do
+      result = report.report[:report]
+      expect(result[:default_branch_main]).to be(false)
     end
   end
 end

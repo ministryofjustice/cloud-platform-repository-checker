@@ -6,11 +6,14 @@
       "owner": {
         "login": "ministryofjustice"
       },
+      "defaultBranchRef": {
+        "name": "main"
+      },
       "branchProtectionRules": {
         "edges": [
           {
             "node": {
-              "pattern": "master",
+              "pattern": "main",
               "requiresApprovingReviews": true,
               "requiresCodeOwnerReviews": true,
               "isAdminEnforced": true,

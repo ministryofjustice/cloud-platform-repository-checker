@@ -1,4 +1,4 @@
-VERSION := 1.2.0
+VERSION := 1.3.0
 
 cloud-platform-repository-checker.gemspec: Rakefile.template bin/* lib/*
 	(export VERSION=$(VERSION); cat Rakefile.template | envsubst > Rakefile)
