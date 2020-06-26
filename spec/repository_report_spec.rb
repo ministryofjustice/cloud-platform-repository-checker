@@ -1,7 +1,11 @@
 describe RepositoryReport do
+  let(:exceptions) { [] }
+  let(:repo_name) { "cloud-platform-infrastructure" }
+
   let(:params) { {
     organization: "ministryofjustice",
-    repo_name: "cloud-platform-infrastructure",
+    exceptions: exceptions,
+    repo_name: repo_name,
     team: "WebOps",
     github_token: "dummytoken"
   } }
@@ -58,6 +62,25 @@ describe RepositoryReport do
       checks.each do |check|
         result = report.report[:report]
         expect(result[check]).to be(false)
+      end
+    end
+
+    context "when repo is an allowed exception" do
+      let(:repo_name) { "cloud-platform-repository-checker" }
+      let(:exceptions) { [ repo_name ] }
+
+      it "passes" do
+        result = report.report
+        expect(result[:status]).to eq("PASS")
+      end
+
+      # The individual checks still fail, we just override the
+      # overall PASS/FAIL status of the repo.
+      it "fails checks" do
+        checks.each do |check|
+          result = report.report[:report]
+          expect(result[check]).to be(false)
+        end
       end
     end
   end

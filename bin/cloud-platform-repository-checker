@@ -16,8 +16,15 @@ require_relative "../lib/repository_report"
 
 ############################################################
 
+# Exceptions are repos which are allowed to break the rules.
+# e.g. a repo to which compiled html files for a github pages
+# site can't implement branch protection, but we don't want it
+# to show up as an error
+exceptions = ENV["REPO_EXCEPTIONS"].to_s.split(" ")
+
 params = {
   organization: ENV.fetch("ORGANIZATION"),
+  exceptions: exceptions,
   regexp: Regexp.new(ENV.fetch("REGEXP")),
   team: ENV.fetch("TEAM"),
   github_token: ENV.fetch("GITHUB_TOKEN")
