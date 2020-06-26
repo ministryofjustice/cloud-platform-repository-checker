@@ -1,5 +1,5 @@
 class RepositoryReport < GithubGraphQlClient
-  attr_reader :organization, :repo_name, :team
+  attr_reader :organization, :exceptions, :repo_name, :team
 
   MAIN_BRANCH = "main"
   ADMIN = "admin"
@@ -8,6 +8,7 @@ class RepositoryReport < GithubGraphQlClient
 
   def initialize(params)
     @organization = params.fetch(:organization)
+    @exceptions = params.fetch(:exceptions) # repos which are allowed to break the rules
     @repo_name = params.fetch(:repo_name)
     @team = params.fetch(:team)
     super(params)
@@ -41,7 +42,11 @@ class RepositoryReport < GithubGraphQlClient
   end
 
   def status
-    all_checks_result.values.all? ? PASS : FAIL
+    if exceptions.include?(repo_name)
+      PASS
+    else
+      all_checks_result.values.all? ? PASS : FAIL
+    end
   end
 
   def all_checks_result
