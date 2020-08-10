@@ -17,8 +17,7 @@
               "requiresApprovingReviews": true,
               "requiresCodeOwnerReviews": true,
               "isAdminEnforced": true,
-              "dismissesStaleReviews": true,
-              "requiresStrictStatusChecks": true
+              "dismissesStaleReviews": true
             }
           }
         ]

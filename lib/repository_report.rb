@@ -57,7 +57,6 @@ class RepositoryReport < GithubGraphQlClient
       requires_code_owner_reviews: has_branch_protection_property?("requiresCodeOwnerReviews"),
       administrators_require_review: has_branch_protection_property?("isAdminEnforced"),
       dismisses_stale_reviews: has_branch_protection_property?("dismissesStaleReviews"),
-      requires_strict_status_checks: has_branch_protection_property?("requiresStrictStatusChecks"),
       team_is_admin: is_team_admin?,
     }
   end
