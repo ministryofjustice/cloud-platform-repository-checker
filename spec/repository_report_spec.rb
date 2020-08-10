@@ -18,7 +18,6 @@ describe RepositoryReport do
       :requires_code_owner_reviews,
       :administrators_require_review,
       :dismisses_stale_reviews,
-      :requires_strict_status_checks,
       :team_is_admin,
     ]
   }
