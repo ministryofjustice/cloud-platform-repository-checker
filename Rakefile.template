@@ -16,7 +16,7 @@ spec = Gem::Specification.new do |s|
   # Change these as appropriate
   s.name              = "cloud-platform-repository-checker"
   s.version           = "${VERSION}"
-  s.summary           = "What this thing does"
+  s.summary           = "Check that ministryofjustice/cloud-platform-* github repositories comply with our standards"
   s.author            = "David Salgado"
   s.email             = "platforms@digital.justice.gov.uk"
   s.homepage          = "https://github.com/ministryofjustice/cloud-platform"
